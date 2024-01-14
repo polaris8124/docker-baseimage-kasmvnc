@@ -9,8 +9,8 @@ network:
     port: auto
     stun_server: auto
   ssl:
-    pem_certificate: /config/ssl/cert.pem
-    pem_key: /config/ssl/cert.key
+    pem_certificate: /home/polaris/.ssl/cert.pem
+    pem_key: /home/polaris/.ssl/cert.key
     require_ssl: false
 
 logging:

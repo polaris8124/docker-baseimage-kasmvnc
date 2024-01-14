@@ -1,5 +1,7 @@
 #!/usr/bin/with-contenv bash
 
 cd $HOME
-exec s6-setuidgid abc \
-  /bin/bash /defaults/startwm.sh
+chmod 777 /defaults && chmod a+x /defaults/startwm.sh
+chown polaris:polaris /home/polaris
+echo "Démarrage WM"
+exec s6-setuidgid polaris /bin/bash /defaults/startwm.sh

@@ -28,7 +28,7 @@ RUN \
   mkdir Downloads
 
 
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble AS buildstage
+FROM registry.polaris.ovh/image-base-ubuntu:polaris-noble-latest as buildstage
 
 ARG KASMVNC_RELEASE="e04731870baebd2784983fb48197a2416c7d3519"
 
@@ -186,7 +186,7 @@ RUN \
   rm -Rf /build-out/usr/local/man
 
 # nodejs builder
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble AS nodebuilder
+FROM registry.polaris.ovh/image-base-ubuntu:polaris-noble-latest as nodebuilder
 ARG KCLIENT_RELEASE
 
 RUN \
@@ -222,7 +222,7 @@ RUN \
   rm -f package-lock.json
 
 # runtime stage
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble
+FROM registry.polaris.ovh/image-base-ubuntu:polaris-noble-latest
 
 # set version label
 ARG BUILD_DATE
@@ -237,7 +237,7 @@ ENV DISPLAY=:1 \
     PERL5LIB=/usr/local/bin \
     OMP_WAIT_POLICY=PASSIVE \
     GOMP_SPINCOUNT=0 \
-    HOME=/config \
+    HOME=/home/polaris \
     START_DOCKER=true \
     PULSE_RUNTIME_PATH=/defaults \
     NVIDIA_DRIVER_CAPABILITIES=all
@@ -321,6 +321,7 @@ RUN \
     pulseaudio \
     pulseaudio-utils \
     python3 \
+    python3-xdg \
     software-properties-common \
     ssl-cert \
     sudo \
@@ -364,9 +365,9 @@ RUN \
   echo "**** user perms ****" && \
   sed -e 's/%sudo	ALL=(ALL:ALL) ALL/%sudo ALL=(ALL:ALL) NOPASSWD: ALL/g' \
     -i /etc/sudoers && \
-  echo "abc:abc" | chpasswd && \
-  usermod -s /bin/bash abc && \
-  usermod -aG sudo abc && \
+  echo "polaris:polaris" | chpasswd && \
+  usermod -s /bin/bash polaris && \
+  usermod -aG sudo polaris && \
   echo "**** proot-apps ****" && \
   mkdir /proot-apps/ && \
   PAPPS_RELEASE=$(curl -sX GET "https://api.github.com/repos/linuxserver/proot-apps/releases/latest" \
@@ -376,21 +377,21 @@ RUN \
   echo "${PAPPS_RELEASE}" > /proot-apps/pversion && \
   echo "**** kasm support ****" && \
   useradd \
-    -u 1000 -U \
+    -u 1105 -U \
     -d /home/kasm-user \
     -s /bin/bash kasm-user && \
   echo "kasm-user:kasm" | chpasswd && \
   usermod -aG sudo kasm-user && \
   mkdir -p /home/kasm-user && \
-  chown 1000:1000 /home/kasm-user && \
+  chown 1105:1105 /home/kasm-user && \
   mkdir -p /var/run/pulse && \
-  chown 1000:root /var/run/pulse && \
+  chown 1105:root /var/run/pulse && \
   mkdir -p /kasmbins && \
   curl -s https://kasm-ci.s3.amazonaws.com/kasmbins-amd64-${KASMBINS_RELEASE}.tar.gz \
     | tar xzvf - -C /kasmbins/ && \
   chmod +x /kasmbins/* && \
-  chown -R 1000:1000 /kasmbins && \
-  chown 1000:1000 /usr/share/kasmvnc/www/Downloads && \
+  chown -R 1105:1105 /kasmbins && \
+  chown 1105:1105 /usr/share/kasmvnc/www/Downloads && \
   mkdir -p /dockerstartup && \
   echo "**** dind support ****" && \
   useradd -U dockremap && \
@@ -402,7 +403,7 @@ RUN \
     https://raw.githubusercontent.com/moby/moby/master/hack/dind && \
   chmod +x /usr/local/bin/dind && \
   echo 'hosts: files dns' > /etc/nsswitch.conf && \
-  usermod -aG docker abc && \
+  usermod -aG docker polaris && \
   echo "**** locales ****" && \
   for LOCALE in $(curl -sL https://raw.githubusercontent.com/thelamer/lang-stash/master/langs); do \
     localedef -i $LOCALE -f UTF-8 $LOCALE.UTF-8; \
@@ -422,4 +423,4 @@ COPY /root /
 
 # ports and volumes
 EXPOSE 3000 3001
-VOLUME /config
+VOLUME /home/polaris
