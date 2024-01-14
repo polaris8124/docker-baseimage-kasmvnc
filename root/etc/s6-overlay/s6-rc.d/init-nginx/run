@@ -6,19 +6,19 @@ NGINX_CONFIG=/etc/nginx/sites-available/default
 # user passed env vars
 CPORT="${CUSTOM_PORT:-3000}"
 CHPORT="${CUSTOM_HTTPS_PORT:-3001}"
-CUSER="${CUSTOM_USER:-abc}"
+CUSER="${CUSTOM_USER:-polaris}"
 SFOLDER="${SUBFOLDER:-/}"
 
 # create self signed cert
-if [ ! -f "/config/ssl/cert.pem" ]; then
-  mkdir -p /config/ssl
+if [ ! -f "/home/polaris/.ssl/cert.pem" ]; then
+  mkdir -p /home/polaris/.ssl
   openssl req -new -x509 \
     -days 3650 -nodes \
-    -out /config/ssl/cert.pem \
-    -keyout /config/ssl/cert.key \
+    -out /home/polaris/.ssl/cert.pem \
+    -keyout /home/polaris/.ssl/cert.key \
     -subj "/C=US/ST=CA/L=Carlsbad/O=Linuxserver.io/OU=LSIO Server/CN=*"
-  chmod 600 /config/ssl/cert.key
-  chown -R abc:abc /config/ssl
+  chmod 600 /home/polaris/.ssl/cert.key
+  chown -R polaris:polaris /home/polaris/.ssl
 fi
 
 # modify nginx config

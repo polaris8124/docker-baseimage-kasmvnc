@@ -1,15 +1,19 @@
 #!/usr/bin/with-contenv bash
 
 # default file copies first run
-if [[ ! -f /config/.config/openbox/autostart ]]; then
-  mkdir -p /config/.config/openbox
-  cp /defaults/autostart /config/.config/openbox/autostart
-  chown -R abc:abc /config/.config/openbox
+if [[ ! -f /home/polaris/.config/openbox/autostart ]]; then
+  mkdir -p /home/polaris/.config/openbox
+  cp /defaults/autostart /home/polaris/.config/openbox/autostart
+  chown -R polaris:polaris /home/polaris/.config/openbox
 fi
-if [[ ! -f /config/.config/openbox/menu.xml ]]; then
-  mkdir -p /config/.config/openbox && \
-  cp /defaults/menu.xml /config/.config/openbox/menu.xml && \
-  chown -R abc:abc /config/.config
+if [[ ! -f /home/polaris/.config/openbox/menu.xml ]]; then
+  mkdir -p /home/polaris/.config/openbox && \
+  cp /defaults/menu.xml /home/polaris/.config/openbox/menu.xml && \
+  chown -R polaris:polaris /home/polaris/.config
+fi
+if [[ ! -f /home/polaris/.cache/openbox ]]; then
+  mkdir -p /home/polaris/.cache/openbox
+  chown -R polaris:polaris /home/polaris/.cache/openbox
 fi
 if [[ -f /usr/local/etc/kasmvnc/kasmvnc.yaml.lsio ]]; then
   mv \
@@ -21,7 +25,7 @@ fi
 printf "${HOME}/.XDG" > /run/s6/container_environment/XDG_RUNTIME_DIR
 if [ ! -d "${HOME}/.XDG" ]; then
   mkdir -p ${HOME}/.XDG
-  chown abc:abc ${HOME}/.XDG
+  chown polaris:polaris ${HOME}/.XDG
 fi
 
 # Locale Support
@@ -51,12 +55,12 @@ if [ ! -f "${HOME}/.local/bin/proot-apps" ]; then
   mkdir -p ${HOME}/.local/bin/
   cp /proot-apps/* ${HOME}/.local/bin/
   echo 'export PATH="$HOME/.local/bin:$PATH"' >> $HOME/.bashrc
-  chown abc:abc \
+  chown polaris:polaris \
     ${HOME}/.bashrc \
     ${HOME}/.local/ \
     ${HOME}/.local/bin \
     ${HOME}/.local/bin/{ncat,proot-apps,proot,jq,pversion}
 elif ! diff -q /proot-apps/pversion ${HOME}/.local/bin/pversion > /dev/null; then
   cp /proot-apps/* ${HOME}/.local/bin/
-  chown abc:abc ${HOME}/.local/bin/{ncat,proot-apps,proot,jq,pversion}
+  chown polaris:polaris ${HOME}/.local/bin/{ncat,proot-apps,proot,jq,pversion}
 fi
