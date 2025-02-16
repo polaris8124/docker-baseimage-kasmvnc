@@ -28,7 +28,7 @@ RUN \
   mkdir Downloads
 
 
-FROM registry.polaris.ovh/image-base-ubuntu:polaris-noble-latest as buildstage
+FROM gitea.polaris.ovh/polaris/image-base-ubuntu:polaris-noble-latest as buildstage
 
 ARG KASMVNC_RELEASE="e04731870baebd2784983fb48197a2416c7d3519"
 
@@ -186,7 +186,7 @@ RUN \
   rm -Rf /build-out/usr/local/man
 
 # nodejs builder
-FROM registry.polaris.ovh/image-base-ubuntu:polaris-noble-latest as nodebuilder
+FROM gitea.polaris.ovh/polaris/image-base-ubuntu:polaris-noble-latest as nodebuilder
 ARG KCLIENT_RELEASE
 
 RUN \
@@ -222,7 +222,7 @@ RUN \
   rm -f package-lock.json
 
 # runtime stage
-FROM registry.polaris.ovh/image-base-ubuntu:polaris-noble-latest
+FROM gitea.polaris.ovh/polaris/image-base-ubuntu:polaris-noble-latest
 
 # set version label
 ARG BUILD_DATE
